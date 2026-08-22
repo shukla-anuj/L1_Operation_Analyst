@@ -1,11 +1,11 @@
-import psycopg2
 from docx import Document
 import fitz
 import os
 import logging
-from functools import wraps
+import psycopg2
 from typing import List, Optional
 from src.config.db_config import DB_CONFIG
+from src.utils import handle_errors, validate_file_type, log_operation
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -14,44 +14,6 @@ logger = logging.getLogger(__name__)
 # Get the base directory (backend/)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DOCS_DIR = os.path.join(BASE_DIR, "docs")
-
-# Decorators
-def handle_errors(func):
-    """Decorator to handle database and file errors."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except psycopg2.Error as e:
-            logger.error(f"Database error in {func.__name__}: {e}")
-            raise
-        except FileNotFoundError as e:
-            logger.error(f"File not found in {func.__name__}: {e}")
-            raise
-        except Exception as e:
-            logger.error(f"Unexpected error in {func.__name__}: {e}")
-            raise
-    return wrapper
-
-def validate_file_type(func):
-    """Decorator to validate file extension."""
-    @wraps(func)
-    def wrapper(self, file_path: str, *args, **kwargs):
-        ext = os.path.splitext(file_path)[1].lower()
-        if ext not in [".docx", ".pdf"]:
-            raise ValueError(f"Unsupported file type: {ext}")
-        return func(self, file_path, *args, **kwargs)
-    return wrapper
-
-def log_operation(func):
-    """Decorator to log operations."""
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        logger.info(f"Starting: {func.__name__}")
-        result = func(*args, **kwargs)
-        logger.info(f"Completed: {func.__name__}")
-        return result
-    return wrapper
 
 class DocumentProcessor:
     """Handle document reading and database operations."""
@@ -104,7 +66,7 @@ class DocumentProcessor:
             """
             cur.execute(sql, (title, content, image_paths, doc_type, file_path))
             self.conn.commit()
-        logger.info(f"✅ Inserted: {title}")
+        logger.info(f"Inserted: {title}")
     
     @log_operation
     @handle_errors
