@@ -1,0 +1,7 @@
+#for creation new database and start
+docker rm -f pgvector-local
+docker compose down -v
+docker compose up -d
+
+docker start pgvector-local
+psql -h localhost -U postgres -d kb_db -W
