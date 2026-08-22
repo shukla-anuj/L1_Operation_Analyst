@@ -18,8 +18,10 @@ CREATE TABLE IF NOT EXISTS incident_embeddings (
 
 CREATE TABLE IF NOT EXISTS architecture_docs (
     doc_id SERIAL PRIMARY KEY,
-    title VARCHAR(100),
-    content TEXT,
-    image_path TEXT,   -- reference to image file or URL
+    title VARCHAR(150),          -- Document title
+    content TEXT,                -- Main textual content
+    image_paths TEXT[],          -- Array of image references (supports multiple diagrams)
+    doc_type VARCHAR(50),        -- e.g. 'manual', 'flow', 'architecture'
+    file_path TEXT,              -- Path to the actual .docx or .pdf file
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
