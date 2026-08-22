@@ -9,6 +9,5 @@ DB_CONFIG = {
     "dbname": os.getenv("DB_NAME", "kb_db"),
     "user": os.getenv("DB_USER", "postgres"),
     "password": os.getenv("DB_PASS"),  # must be set in environment
-    "port": os.getenv("DB_PORT", "5432"),
-    "sslmode": os.getenv("DB_SSLMODE", "require")  # enforce SSL in finance org
+    "port": os.getenv("DB_PORT", "5433") # enforce SSL in finance org
 }

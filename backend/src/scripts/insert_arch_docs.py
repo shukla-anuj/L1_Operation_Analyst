@@ -11,6 +11,10 @@ from src.config.db_config import DB_CONFIG
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Get the base directory (backend/)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DOCS_DIR = os.path.join(BASE_DIR, "docs")
+
 # Decorators
 def handle_errors(func):
     """Decorator to handle database and file errors."""
@@ -122,22 +126,22 @@ class ArchitectureDocLoader:
         try:
             documents = [
                 {
-                    "path": "/app/docs/Application_Support_Manual.docx",
+                    "path": os.path.join(DOCS_DIR, "Application Support Manual.docx"),
                     "title": "Application Support Manual",
                     "type": "manual",
-                    "images": ["/app/docs/images/support_flow.png"]
+                    "images": []
                 },
                 {
-                    "path": "/app/docs/Application_Flow_Manual.docx",
+                    "path": os.path.join(DOCS_DIR, "Application_Flow_Manual.docx"),
                     "title": "Application Flow Manual",
                     "type": "flow",
-                    "images": ["/app/docs/images/app_flow.png"]
+                    "images": []
                 },
                 {
-                    "path": "/app/docs/Project_Architecture_Flow_Manual.docx",
+                    "path": os.path.join(DOCS_DIR, "Project_Architecture_Flow_Manual.docx"),
                     "title": "Project Architecture Flow Manual",
                     "type": "architecture",
-                    "images": ["/app/docs/images/overview.png", "/app/docs/images/processing.png"]
+                    "images": [os.path.join(DOCS_DIR, "DataLake_application_architect.png")]
                 }
             ]
             
