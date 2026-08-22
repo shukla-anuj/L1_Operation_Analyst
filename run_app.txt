@@ -5,3 +5,7 @@ docker compose up -d
 
 docker start pgvector-local
 psql -h localhost -U postgres -d kb_db -W
+
+
+#install poetry
+(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
