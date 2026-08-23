@@ -128,7 +128,7 @@ class IncidentEmbeddingPipeline:
             
             # Store embeddings
             self.store.batch_insert_embeddings(embeddings_data)
-            logger.info(f"📦 Processed batch {i // self.batch_size + 1}/{(len(incidents) + self.batch_size - 1) // self.batch_size}")
+            logger.info(f"Processed batch {i // self.batch_size + 1}/{(len(incidents) + self.batch_size - 1) // self.batch_size}")
         
         # Summary
         embedded_count = self.store.get_embedded_count()
