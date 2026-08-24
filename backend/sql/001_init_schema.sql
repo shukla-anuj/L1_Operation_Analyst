@@ -11,10 +11,13 @@ CREATE TABLE IF NOT EXISTS incidents (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+DROP TABLE IF EXISTS incident_embeddings;
 CREATE TABLE IF NOT EXISTS incident_embeddings (
     incident_id INT REFERENCES incidents(incident_id),
     embedding vector(1536)  -- adjust to match your embedding model dimension
 );
+ALTER TABLE incident_embeddings
+ADD CONSTRAINT incident_embeddings_unique UNIQUE (incident_id);
 
 CREATE TABLE IF NOT EXISTS architecture_docs (
     doc_id SERIAL PRIMARY KEY,
@@ -24,4 +27,12 @@ CREATE TABLE IF NOT EXISTS architecture_docs (
     doc_type VARCHAR(50),        -- e.g. 'manual', 'flow', 'architecture'
     file_path TEXT,              -- Path to the actual .docx or .pdf file
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE architecture_doc_chunks (
+    chunk_id BIGSERIAL PRIMARY KEY,
+    doc_id INT REFERENCES architecture_docs(doc_id),
+    content TEXT NOT NULL,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    embedding vector(384) NOT NULL
 );
