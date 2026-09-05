@@ -17,9 +17,12 @@ from src.utils import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-EMBEDDING_DIMENSION = 384
+# EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+# EMBEDDING_DIMENSION = 384
 
+#model with higher dimension
+EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
+EMBEDDING_DIMENSION = 768
 
 class EmbeddingStore(DatabaseManager):
     """Manage incident embeddings in PostgreSQL."""
@@ -62,7 +65,7 @@ class EmbeddingStore(DatabaseManager):
     ) -> None:
         """Insert or update one incident embedding."""
         sql = """
-            INSERT INTO incident_embeddings (incident_id, embedding)
+            INSERT INTO incident_embeddings_768 (incident_id, embedding)
             VALUES (%s, %s)
             ON CONFLICT (incident_id) DO UPDATE
             SET embedding = EXCLUDED.embedding;
@@ -82,7 +85,7 @@ class EmbeddingStore(DatabaseManager):
             return
 
         sql = """
-            INSERT INTO incident_embeddings (incident_id, embedding)
+            INSERT INTO incident_embeddings_768 (incident_id, embedding)
             VALUES (%s, %s)
             ON CONFLICT (incident_id) DO UPDATE
             SET embedding = EXCLUDED.embedding;
@@ -94,7 +97,7 @@ class EmbeddingStore(DatabaseManager):
     def get_embedded_count(self) -> int:
         """Return the number of stored incident embeddings."""
         result = self.execute_query(
-            "SELECT COUNT(*) FROM incident_embeddings;",
+            "SELECT COUNT(*) FROM incident_embeddings_768;",
             fetch_one=True,
         )
         return result[0] if result else 0

@@ -9,3 +9,6 @@ psql -h localhost -U postgres -d kb_db -W
 
 #install poetry
 (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+
+
+poetry run python .\src\db\search_incidents.py

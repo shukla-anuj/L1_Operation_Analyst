@@ -13,7 +13,6 @@ from src.utils import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-EMBEDDING_DIMENSION = 384  # or 1536 if using OpenAI embeddings
 
 
 class IncidentSearchStore(DatabaseManager):
@@ -49,7 +48,7 @@ class IncidentSearchStore(DatabaseManager):
                    i.resolution,
                    e.embedding <#> %s::vector AS distance
             FROM incidents i
-            JOIN incident_embeddings e
+            JOIN incident_embeddings_768 e
               ON i.incident_id = e.incident_id
             ORDER BY distance ASC
             LIMIT %s;
@@ -87,10 +86,12 @@ class IncidentSearchPipeline:
 if __name__ == "__main__":
     from src.embeddings.incident_embeddings import IncidentEmbedder
 
+    #EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+    # EMBEDDING_DIMENSION = 384
     pipeline = IncidentSearchPipeline(embedder=IncidentEmbedder())
 
     try:
-        query = "glue job error, pandas module not found"
+        query = "Policy process job terminated: \n    at java.io.ByteArrayOutputStream.hugeCapacity(Unknown Source)"
         logger.info("Searching for incidents similar to: '%s'", query)
         matches = pipeline.search(query, top_k=5)
 
