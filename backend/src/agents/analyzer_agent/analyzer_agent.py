@@ -125,7 +125,9 @@ def validate_analyzer_output(result: Dict[str, Any]) -> None:
 # -------------------------
 # Prompt template
 # -------------------------
-ANALYZER_PROMPT_TEMPLATE = """You are the Analyzer Agent. Produce a concise, evidence-backed Root Cause Analysis in strict JSON.
+ANALYZER_PROMPT_TEMPLATE = """You are the Analyzer Agent. You have very good knowledge of system architecture and troubleshooting. 
+you also have very good knowledge of AWS, distributed processing, spark frameworks and datalake, datawarehouse. 
+Produce a concise, evidence-backed Root Cause Analysis in strict JSON.
 
 Inputs
 Incident Query:
@@ -654,7 +656,7 @@ if __name__ == "__main__":
 
     # Example query
     try:
-        rca = agent.generate_rca("Glue job failing with ModuleNotFoundError pyarrow")
+        rca = agent.generate_rca("Policy process job terminated: \n    at java.io.ByteArrayOutputStream.hugeCapacity(Unknown Source)")
         print(json.dumps(rca, indent=2))
     except Exception as e:
         logger.error("Example run failed: %s", e)
