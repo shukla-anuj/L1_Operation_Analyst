@@ -59,6 +59,42 @@ class AnalyzerStore(DatabaseManager):
         ]
 
     @handle_errors
+    def insert_incident(
+        self,
+        service: str,
+        error_log: str,
+        root_cause: str = "",
+        resolution: str = "",
+    ) -> int:
+        """Register a newly raised incident and return its database id."""
+        row = self.execute_query(
+            """
+            INSERT INTO incidents (service, error_log, root_cause, resolution)
+            VALUES (%s, %s, %s, %s)
+            RETURNING incident_id;
+            """,
+            (service, error_log, root_cause, resolution),
+            fetch_one=True,
+        )
+        if not row:
+            raise RuntimeError("Incident insert did not return an incident_id")
+        return int(row[0])
+
+    @handle_errors
+    def insert_incident_embedding(self, incident_id: int, embedding: List[float]) -> None:
+        """Store the 768-dimensional embedding used by IncidentSearchPipeline."""
+        if len(embedding) != 768:
+            raise ValueError(f"Expected 768 embedding dimensions, got {len(embedding)}")
+        self.execute_query(
+            """
+            INSERT INTO incident_embeddings_768 (incident_id, embedding)
+            VALUES (%s, %s)
+            ON CONFLICT (incident_id) DO UPDATE SET embedding = EXCLUDED.embedding;
+            """,
+            (incident_id, embedding),
+        )
+
+    @handle_errors
     def search_doc_chunks_text(
         self,
         query: str,
@@ -80,6 +116,38 @@ class AnalyzerStore(DatabaseManager):
         rows = self.execute_query(
             sql,
             (f"%{query.strip()}%", top_k),
+            fetch_one=False,
+        )
+        return [
+            {
+                "chunk_id": row[0],
+                "doc_id": row[1],
+                "content": row[2],
+                "metadata": row[3] or {},
+                "score": row[4],
+            }
+            for row in rows or []
+        ]
+
+    @handle_errors
+    def search_support_manual_by_job(
+        self,
+        job_name: str,
+        top_k: int = 5,
+    ) -> List[Dict[str, Any]]:
+        """Find Application Support Manual chunks containing a failed job name."""
+        if not job_name or top_k < 1:
+            return []
+
+        rows = self.execute_query(
+            """
+            SELECT chunk_id, doc_id, content, metadata, 0.0 AS score
+            FROM architecture_doc_chunks
+            WHERE content ILIKE %s
+            ORDER BY chunk_id
+            LIMIT %s;
+            """,
+            (f"%{job_name}%", top_k),
             fetch_one=False,
         )
         return [

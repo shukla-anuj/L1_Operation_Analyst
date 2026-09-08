@@ -166,9 +166,9 @@ if __name__ == "__main__":
     pipeline = ProjectDocPipeline()
 
     try:
-        pipeline.process_doc("docs/Application Support Manual.docx", doc_id=1, service="Support", author="Anuj Shukla")
-        pipeline.process_doc("docs/Application_Flow_Manual.docx", doc_id=2, service="Glue", author="Anuj Shukla")
-        pipeline.process_doc("docs/Project_Architecture_Flow_Manual.docx", doc_id=3, service="Architecture", author="Anuj Shukla")
-        pipeline.process_doc("docs/DataLake_application_architect.png", doc_id=4, service="DataLake", author="Anuj Shukla")
+        pipeline.process_doc("docs/Application Support Manual.docx", doc_id=5, service="Support", author="Anuj Shukla")
+        #pipeline.process_doc("docs/Application_Flow_Manual.docx", doc_id=2, service="Glue", author="Anuj Shukla")
+        #pipeline.process_doc("docs/Project_Architecture_Flow_Manual.docx", doc_id=3, service="Architecture", author="Anuj Shukla")
+        #pipeline.process_doc("docs/DataLake_application_architect.png", doc_id=4, service="DataLake", author="Anuj Shukla")
     finally:
         pipeline.cleanup()

@@ -169,22 +169,22 @@ class ArchitectureDocLoader:
                 "manual",
             )
 
-            self.processor.process_file(
-                os.path.join(DOCS_DIR, "Application_Flow_Manual.docx"),
-                "Application Flow Manual",
-                "flow",
-            )
+            # self.processor.process_file(
+            #     os.path.join(DOCS_DIR, "Application_Flow_Manual.docx"),
+            #     "Application Flow Manual",
+            #     "flow",
+            # )
 
-            self.processor.process_file(
-                os.path.join(DOCS_DIR, "Project_Architecture_Flow_Manual.docx"),
-                "Project Architecture Flow Manual",
-                "architecture",
-            )
+            # self.processor.process_file(
+            #     os.path.join(DOCS_DIR, "Project_Architecture_Flow_Manual.docx"),
+            #     "Project Architecture Flow Manual",
+            #     "architecture",
+            # )
 
-            self.processor.process_image(
-                os.path.join(DOCS_DIR, "DataLake_application_architect.png"),
-                "DataLake Application Architecture",
-            )
+            # self.processor.process_image(
+            #     os.path.join(DOCS_DIR, "DataLake_application_architect.png"),
+            #     "DataLake Application Architecture",
+            # )
 
         finally:
             self.processor.disconnect()

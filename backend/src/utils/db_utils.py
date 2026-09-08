@@ -4,6 +4,7 @@ import psycopg2
 from psycopg2 import pool
 import logging
 from typing import Optional, List, Tuple
+from src.utils.decorators import log_query, log_many_query
 
 logger = logging.getLogger(__name__)
 
@@ -43,30 +44,63 @@ class DatabaseManager:
         self.pool.closeall()
         logger.info("Connection pool closed")
     
-    def execute_query(self, query: str, params: tuple = None, fetch_one: bool = False):
-        """
-        Execute a query and optionally fetch results.
+    # def execute_query(self, query: str, params: tuple = None, fetch_one: bool = False):
+    #     """
+    #     Execute a query and optionally fetch results.
         
-        Args:
-            query: SQL query string
-            params: Query parameters
-            fetch_one: If True, fetch one row; if False, fetch all
+    #     Args:
+    #         query: SQL query string
+    #         params: Query parameters
+    #         fetch_one: If True, fetch one row; if False, fetch all
             
-        Returns:
-            Query result or None
-        """
+    #     Returns:
+    #         Query result or None
+    #     """
+    #     conn = self.get_connection()
+    #     try:
+    #         with conn.cursor() as cur:
+    #             cur.execute(query, params or ())
+    #             if query.strip().upper().startswith("SELECT"):
+    #                 return cur.fetchone() if fetch_one else cur.fetchall()
+    #             else:
+    #                 conn.commit()
+    #                 return None
+    #     finally:
+    #         self.release_connection(conn)
+
+    @log_query
+    def execute_query(
+        self,
+        query: str,
+        params: tuple = None,
+        fetch_one: bool = False,
+    ):
         conn = self.get_connection()
+
         try:
             with conn.cursor() as cur:
                 cur.execute(query, params or ())
-                if query.strip().upper().startswith("SELECT"):
-                    return cur.fetchone() if fetch_one else cur.fetchall()
-                else:
-                    conn.commit()
-                    return None
+
+                result = None
+                if cur.description is not None:
+                    result = (
+                        cur.fetchone()
+                        if fetch_one
+                        else cur.fetchall()
+                    )
+
+                conn.commit()
+                return result
+
+        except Exception:
+            conn.rollback()
+            raise
+
         finally:
             self.release_connection(conn)
+
     
+    @log_many_query
     def execute_many(self, query: str, data: List[Tuple]):
         """
         Execute query with multiple parameter sets (batch operation).

@@ -1,5 +1,5 @@
 #for creation new database and start
-docker rm -f pgvector-local
+#docker rm -f pgvector-local
 docker compose down -v
 docker compose up -d
 
