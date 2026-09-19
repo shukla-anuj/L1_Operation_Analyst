@@ -1,6 +1,6 @@
-# RCA L1 CoPilot
+# RCA CoPilot
 
-RCA L1 CoPilot is an incident triage and root-cause-analysis dashboard for L1 operations teams. An operator can paste a stack trace or error log, submit it to an evidence-oriented analyzer, review historical incident matches, and inspect one or more RCA candidates with their confidence, contributing factors, evidence references, and proposed resolution.
+RCA CoPilot is an incident triage and root-cause-analysis dashboard for L1 operations teams. An operator can paste a stack trace or error log, submit it to an evidence-oriented analyzer, review historical incident matches, and inspect one or more RCA candidates with their confidence, contributing factors, evidence references, and proposed resolution.
 
 The application is split into a React/Vite frontend, a FastAPI backend, and a PostgreSQL database with pgvector support. The backend uses a LangGraph workflow to coordinate incident registration, retrieval, model calls, validation, and persistence.
 
