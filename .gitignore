@@ -1,3 +1,7 @@
 .env
 .vscode
 __pycache__/
+backend/__pycache__/
+frontend/__pycache__/
+frontend/node_modules/
+frontend/dist/

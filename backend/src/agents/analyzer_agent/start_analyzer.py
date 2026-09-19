@@ -27,19 +27,12 @@ def main() -> None:
         result = agent.analyze(
             incident_query=os.getenv(
                 "INCIDENT_QUERY",
-                """Job ERROR : aggregate_clickstream ,
-                    Error: TaskSetManager: Task 7 in stage 45.0 failed 4 times; aborting job
-                    java.lang.OutOfMemoryError: Java heap space
-                        at org.apache.spark.util.collection.unsafe.sort.UnsafeExternalSorter.allocateMemory(UnsafeExternalSorter.java:210)
-                        at org.apache.spark.util.collection.unsafe.sort.UnsafeExternalSorter.insertAll(UnsafeExternalSorter.java:320)
-                        at org.apache.spark.shuffle.sort.SortShuffleWriter.write(SortShuffleWriter.scala:63)
-                        at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:99)
-                        at org.apache.spark.scheduler.ShuffleMapTask.runTask(ShuffleMapTask.scala:52)
-                        at org.apache.spark.scheduler.Task.run(Task.scala:123)
-                        at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:345)
+                """Job ERROR : glue job failed ,
+                    Command failed with exit code 1 or An error occurred while calling...
                         """
             ),
         )
+        print("<<<<<<<< Analyzer Result >>>>>>>>>")
         print(json.dumps(result, indent=2, default=str))
     finally:
         agent.close()

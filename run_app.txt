@@ -1,7 +1,7 @@
 #for creation new database and start
 #docker rm -f pgvector-local
-docker compose down -v
-docker compose up -d
+#docker compose down -v
+#docker compose up -d
 
 docker start pgvector-local
 psql -h localhost -U postgres -d kb_db -W
@@ -12,3 +12,13 @@ psql -h localhost -U postgres -d kb_db -W
 
 
 poetry run python .\src\db\search_incidents.py
+
+poetry run python .\src\db\start_analyzer.py
+
+#start fast api
+cd backend
+python -m uvicorn src.api:app --reload
+
+#start npm
+cd frontend
+npm run dev
