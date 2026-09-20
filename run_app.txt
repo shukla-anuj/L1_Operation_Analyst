@@ -17,8 +17,32 @@ poetry run python .\src\db\start_analyzer.py
 
 #start fast api
 cd backend
-python -m uvicorn src.api:app --reload
+poetry run python -m uvicorn src.api:app --reload
 
 #start npm
 cd frontend
 npm run dev
+
+#db backup
+docker exec -t pgvector-local pg_dump -U postgres -d kb_db > backup.sql
+
+docker cp .\backup.sql pgvector-local:/tmp/backup.sql
+docker exec -i pgvector-local psql -U postgres -d kb_db -f /tmp/backup.sql
+
+$content = Get-Content .\backup.sql -Raw -Encoding Unicode
+
+[System.IO.File]::WriteAllText(
+    ".\backup_utf8.sql",
+    $content,
+    [System.Text.UTF8Encoding]::new($false)
+)
+
+docker cp .\backup_utf8.sql pgvector-local:/tmp/backup_utf8.sql
+
+docker exec -i pgvector-local psql `
+  -U postgres `
+  -d kb_db `
+  -f /tmp/backup_utf8.sql
+
+#db restore
+docker exec -i pgvector-local psql -U postgres -d kb_db < backup.sql

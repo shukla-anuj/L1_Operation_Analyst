@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   postgres:
     image: ankane/pgvector:latest
@@ -11,5 +10,15 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  floci:
+    image: floci/floci:latest
+    container_name: floci-local
+    ports:
+      - "4566:4566"
+    volumes:
+      - flocidata:/app/data
+
 volumes:
   pgdata:
+  flocidata:
